@@ -680,7 +680,22 @@ async def cb_video_generate(call: CallbackQuery, state: FSMContext):
 
 
 async def do_generate_video(message: Message, en_prompt: str, ar: str, image_bytes: bytes | None = None):
-    status = await message.answer(f"🎬 Генерирую видео ({ar})… это может занять несколько минут")
+    if image_bytes is not None:
+        status = await message.answer("🎨 Подготавливаю фон сцены…")
+        try:
+            bg_prompt = (
+                "Redraw this photo of a person so that the background, environment and lighting "
+                "become: " + en_prompt + ". "
+                "Keep the person's face, hairstyle, body proportions, pose, outfit, colors and "
+                "identity EXACTLY as in the original photo — do not change them. Only change the "
+                "background, environment, lighting and atmosphere. Output a photorealistic still photo."
+            )
+            image_bytes = await openai_image_edit(bg_prompt, [image_bytes])
+        except Exception as e:
+            log.error("background edit error: %s", e)
+        await status.edit_text(f"🎬 Генерирую видео ({ar})… это может занять несколько минут")
+    else:
+        status = await message.answer(f"🎬 Генерирую видео ({ar})… это может занять несколько минут")
 
     try:
         video_bytes = await veo_generate(en_prompt, ar, image_bytes)
