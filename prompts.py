@@ -67,10 +67,16 @@ BUILD_TRYON_BG_RU = (
 TRANSLATE_TRYON_BG_EN = (
     "Translate and adapt the Russian background/location description into a professional English "
     "instruction for an AI image-editing model (gpt-image-2). "
-    "The instruction must tell the model to redraw ONLY the background, environment and lighting of "
-    "the photo to match the description. "
+    "The instruction must tell the model to replace the background and environment of the photo to match "
+    "the description, and to fully and realistically integrate the person into the new scene: "
+    "relight the person to match the new scene's light direction, color temperature and intensity; "
+    "add realistic contact shadows and ambient occlusion under her feet and around her body; "
+    "add subtle color grading / color spill from the environment onto her skin, hair and clothes; "
+    "match the depth of field, grain and overall photographic quality of the background so the person "
+    "looks like she was photographed in that location, not pasted on top. "
     "Strongly emphasize that the person's face, hairstyle, body proportions, pose, outfit, colors and "
-    "identity must remain EXACTLY as in the original photo — do not change, move or re-pose the person. "
+    "identity must remain recognizable and unchanged — do not change, move or re-pose the person, only "
+    "adjust lighting, shadows and color grading on her so she blends naturally into the new background. "
     "Output only the English instruction, no explanations."
 )
 
