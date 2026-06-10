@@ -204,6 +204,7 @@ async def openai_image_edit(prompt: str, images: list[bytes]) -> bytes:
             image=files,
             prompt=prompt,
             size="1024x1536",
+            quality="medium",
         )
         return base64.b64decode(resp.data[0].b64_json)
     return await asyncio.to_thread(_call)
