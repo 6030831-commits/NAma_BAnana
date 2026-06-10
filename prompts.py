@@ -54,52 +54,6 @@ BUILD_TRYON_EN = (
     "Output only the prompt, no explanations."
 )
 
-BUILD_VIDEO_RU = (
-    "Ты — эксперт по промптам для видео-генерации (Veo 3). "
-    "По идее пользователя составь подробный структурированный промпт НА РУССКОМ для короткого видео. "
-    "Включи: главный объект/персонаж, его действие и движение, сцену и окружение, движение камеры, "
-    "освещение, цвет, стиль, настроение и атмосферу. "
-    "Если в идее есть человек — обязательно укажи: естественные движения, живую мимику, реалистичную динамику. "
-    "Выведи только текст промпта, без вступлений и пояснений."
-)
-
-TRANSLATE_VIDEO_EN = (
-    "Translate and adapt the Russian prompt into a professional English video-generation prompt for Veo 3. "
-    "Preserve all details and structure: subject, action/motion, scene, camera movement, lighting, color, "
-    "style, mood and atmosphere. "
-    "If the prompt contains a person or people, automatically add realism keywords: "
-    "photorealistic, natural movement, lifelike expression, cinematic, real human proportions — "
-    "but only if they don't contradict the stated style. "
-    "Output only the English prompt, no explanations."
-)
-
-BUILD_ANIMATE_RU = (
-    "Ты — эксперт по промптам для оживления фото в видео (Veo 3, image-to-video) для фэшн-съёмок. "
-    "Тебе дано фото фотомодели в одежде и описание желаемой сцены от пользователя. "
-    "Составь подробный промпт НА РУССКОМ для анимации этого фото: опиши естественное движение модели "
-    "(плавная походка, поворот, позирование, взгляд в камеру, ветер развевает волосы или одежду и т.п.), "
-    "движение камеры (медленный наезд, панорама, лёгкая орбита и т.д.), атмосферу локации — "
-    "используй ту локацию, что видна на фото или указана пользователем (помещение/студия или улица/на воздухе), "
-    "освещение и настроение. "
-    "Внешность модели, причёску, одежду, цвета и силуэт НЕ менять — только добавляй естественное движение "
-    "и динамику камеры, как в видео с модного показа или рекламной видеосъёмки. "
-    "Обязательно укажи, что фон и локация должны быть видны полностью с самого первого кадра видео — "
-    "без затемнения, наплыва, появления или смены фона в процессе ролика. "
-    "Выведи только текст промпта, без вступлений и пояснений."
-)
-
-TRANSLATE_ANIMATE_EN = (
-    "Translate and adapt the Russian prompt into a professional English prompt for Veo 3 image-to-video generation. "
-    "Preserve all details: the subject's motion, camera movement, location atmosphere, lighting, mood. "
-    "Add realism keywords: photorealistic, natural movement, lifelike expression, cinematic, subtle motion, "
-    "fashion film aesthetic — but only if they don't contradict the stated style. "
-    "Strongly emphasize that the person's appearance, outfit, colors and identity must remain EXACTLY "
-    "as in the source image — only add motion and camera movement. "
-    "Strongly emphasize that the background and location must be fully visible and established from "
-    "the very first frame — no fade-in, dissolve, or background appearing/changing during the clip. "
-    "Output only the English prompt, no explanations."
-)
-
 BUILD_TRYON_BG_RU = (
     "Ты — эксперт по промптам для image-edit моделей (фэшн-съёмка). "
     "Тебе дано описание желаемой локации/фона от пользователя для фото девушки в одежде. "
