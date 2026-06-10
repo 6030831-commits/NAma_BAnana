@@ -100,6 +100,54 @@ TRANSLATE_ANIMATE_EN = (
     "Output only the English prompt, no explanations."
 )
 
+BUILD_TRYON_BG_RU = (
+    "Ты — эксперт по промптам для image-edit моделей (фэшн-съёмка). "
+    "Тебе дано описание желаемой локации/фона от пользователя для фото девушки в одежде. "
+    "Составь подробный промпт НА РУССКОМ для замены фона вокруг девушки: опиши локацию, окружение, "
+    "освещение, атмосферу, время суток, цветовую палитру и детали окружения. "
+    "Не описывай саму девушку, её одежду, позу, причёску или внешность — только фон, локацию, "
+    "окружение и освещение. "
+    "Выведи только текст промпта, без вступлений и пояснений."
+)
+
+TRANSLATE_TRYON_BG_EN = (
+    "Translate and adapt the Russian background/location description into a professional English "
+    "instruction for an AI image-editing model (gpt-image-2). "
+    "The instruction must tell the model to redraw ONLY the background, environment and lighting of "
+    "the photo to match the description. "
+    "Strongly emphasize that the person's face, hairstyle, body proportions, pose, outfit, colors and "
+    "identity must remain EXACTLY as in the original photo — do not change, move or re-pose the person. "
+    "Output only the English instruction, no explanations."
+)
+
+BUILD_TRYON_VIDEO_RU = (
+    "Ты — эксперт по техническим промптам для видео-генерации (Veo 3, image-to-video) для фэшн-съёмок. "
+    "Тебе дано фото девушки в одежде на фоне локации и описание желаемой съёмки от пользователя. "
+    "Составь промпт НА РУССКОМ, описывающий ТОЛЬКО технические аспекты съёмки и физику движения, "
+    "БЕЗ описания внешности, одежды, позы, причёски или фона (они уже заданы фото и не должны меняться). "
+    "Включи: "
+    "движение камеры (медленный наезд, отъезд, панорама, лёгкая орбита, проезд и т.п.); "
+    "параметры съёмки (глубина резкости, фокус, яркость, экспозиция, резкость, контраст, цветокоррекция); "
+    "физику и динамику — простые повседневные движения девушки (идёт, поворачивается, поправляет волосы, "
+    "смотрит по сторонам, улыбается — обычные бытовые движения, БЕЗ модельной походки по подиуму и дефиле); "
+    "природные элементы при наличии (дуновение ветра, колыхание ткани и волос, течение воды, движение "
+    "листвы и т.п.). "
+    "Используй слово 'девушка', а не 'модель'. "
+    "Выведи только текст промпта, без вступлений и пояснений."
+)
+
+TRANSLATE_TRYON_VIDEO_EN = (
+    "Translate and adapt the Russian prompt into a professional English prompt for Veo 3 image-to-video "
+    "generation. "
+    "The prompt must describe ONLY camera technique (movement, depth of field, focus, brightness, "
+    "exposure, sharpness, contrast, color grading) and physics/motion (the girl's simple, everyday, "
+    "natural movements, wind, fabric and hair movement, water, foliage, etc.). "
+    "Use the word 'girl', not 'model'. Avoid any runway, catwalk or fashion-show walk style. "
+    "Strongly emphasize that the person's appearance, outfit, colors, identity AND the background/location "
+    "must remain EXACTLY as in the source image — only add camera motion and natural physics-based movement. "
+    "Output only the English prompt, no explanations."
+)
+
 ANALYZE_STYLE = (
     "Analyze this reference image and extract its visual design style for AI image generation. "
     "Describe only the background and aesthetic: color palette, textures, gradients, patterns, "

@@ -24,7 +24,12 @@ from google import genai
 from google.genai import types as genai_types
 from PIL import Image, ImageDraw, ImageFont
 
-from prompts import BUILD_RU, REVISE_RU, TRANSLATE_EN, ANALYZE_STYLE, BUILD_ANIMATE_RU, TRANSLATE_ANIMATE_EN
+from prompts import (
+    BUILD_RU, REVISE_RU, TRANSLATE_EN, ANALYZE_STYLE,
+    BUILD_ANIMATE_RU, TRANSLATE_ANIMATE_EN,
+    BUILD_TRYON_BG_RU, TRANSLATE_TRYON_BG_EN,
+    BUILD_TRYON_VIDEO_RU, TRANSLATE_TRYON_VIDEO_EN,
+)
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -71,7 +76,10 @@ class Infographic(StatesGroup):
     text   = State()
 
 class TryOn(StatesGroup):
-    garment = State()
+    garment    = State()
+    bg_idea    = State()
+    bg_edit    = State()
+    video_idea = State()
 
 
 # ---------------------------------------------------------------------------
@@ -324,6 +332,22 @@ def video_done_keyboard() -> InlineKeyboardMarkup:
     return b.as_markup()
 
 
+def tryon_bg_ru_keyboard() -> InlineKeyboardMarkup:
+    b = InlineKeyboardBuilder()
+    b.button(text="✏️ Внести правки",        callback_data="tryon_bg_edit_ru")
+    b.button(text="✅ Готово, сгенерировать", callback_data="tryon_bg_generate")
+    b.adjust(2)
+    return b.as_markup()
+
+
+def tryon_bg_done_keyboard() -> InlineKeyboardMarkup:
+    b = InlineKeyboardBuilder()
+    b.button(text="🔁 Переделать фон",  callback_data="tryon_bg_regen")
+    b.button(text="✅ Подходит, дальше", callback_data="tryon_bg_confirm")
+    b.adjust(2)
+    return b.as_markup()
+
+
 def start_keyboard() -> InlineKeyboardMarkup:
     b = InlineKeyboardBuilder()
     b.button(text="🖼 Генерация изображения", callback_data="mode_image")
@@ -519,7 +543,7 @@ async def paid(message: Message, state: FSMContext):
             await message.answer("❌ Промпт не найден. Начните заново через /start")
             return
         await state.update_data(var=ar)
-        await do_generate_video(message, en_prompt, ar, image_bytes)
+        await do_generate_video(message, en_prompt, ar, image_bytes, prerender_bg=not data.get("bg_done", False))
         return
 
 
@@ -633,8 +657,9 @@ async def cb_video_to_english(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     await call.message.edit_reply_markup(reply_markup=None)
     status = await call.message.answer("🌐 Перевожу на английский…")
+    translate_prompt = TRANSLATE_TRYON_VIDEO_EN if data.get("bg_done") else TRANSLATE_ANIMATE_EN
     try:
-        en_prompt = await openai_chat(TRANSLATE_ANIMATE_EN, data["video_ru_prompt"])
+        en_prompt = await openai_chat(translate_prompt, data["video_ru_prompt"])
     except Exception as e:
         await status.edit_text(f"❌ Ошибка OpenAI: {e}")
         await call.answer()
@@ -665,9 +690,11 @@ async def cb_video_generate(call: CallbackQuery, state: FSMContext):
         await call.answer("Сначала переведите промпт на английский.", show_alert=True)
         return
 
+    prerender_bg = not data.get("bg_done", False)
+
     if user_id in FREE_USERS:
         await call.answer()
-        await do_generate_video(call.message, en_prompt, ar, image_bytes)
+        await do_generate_video(call.message, en_prompt, ar, image_bytes, prerender_bg=prerender_bg)
         return
 
     await call.message.answer_invoice(
@@ -681,8 +708,11 @@ async def cb_video_generate(call: CallbackQuery, state: FSMContext):
     await call.answer()
 
 
-async def do_generate_video(message: Message, en_prompt: str, ar: str, image_bytes: bytes | None = None):
-    if image_bytes is not None:
+async def do_generate_video(
+    message: Message, en_prompt: str, ar: str,
+    image_bytes: bytes | None = None, prerender_bg: bool = True,
+):
+    if image_bytes is not None and prerender_bg:
         status = await message.answer("🎨 Подготавливаю фон сцены…")
         try:
             bg_prompt = (
@@ -882,8 +912,105 @@ async def handle_tryon_garment(message: Message, state: FSMContext):
     ]
     await message.answer_media_group(media)
 
-    await state.clear()
-    await message.answer("Выберите режим:", reply_markup=start_keyboard())
+    await state.update_data(tryon_base_image=results[0])
+    await state.set_state(TryOn.bg_idea)
+    await message.answer(
+        "Опишите желаемый фон/локацию вокруг девушки (например: на улице вечером в неоновом городе, "
+        "в кафе у окна, на пляже на закате):"
+    )
+
+
+@dp.message(TryOn.bg_idea)
+async def handle_tryon_bg_idea(message: Message, state: FSMContext):
+    status = await message.answer("✍️ Собираю промпт фона…")
+    try:
+        ru_prompt = await openai_chat(BUILD_TRYON_BG_RU, message.text)
+    except Exception as e:
+        await status.edit_text(f"❌ Ошибка OpenAI: {e}")
+        return
+    await state.update_data(tryon_bg_ru_prompt=ru_prompt)
+    await status.delete()
+    await message.answer(ru_prompt, reply_markup=tryon_bg_ru_keyboard())
+
+
+@dp.callback_query(F.data == "tryon_bg_edit_ru")
+async def cb_tryon_bg_edit_ru(call: CallbackQuery, state: FSMContext):
+    await state.set_state(TryOn.bg_edit)
+    await call.message.answer("Что поправить?")
+    await call.answer()
+
+
+@dp.message(TryOn.bg_edit)
+async def handle_tryon_bg_edit(message: Message, state: FSMContext):
+    data = await state.get_data()
+    status = await message.answer("✍️ Вношу правки…")
+    try:
+        ru_prompt = await openai_chat(
+            REVISE_RU,
+            f"Текущий промпт: {data['tryon_bg_ru_prompt']}\n\nПравки: {message.text}",
+        )
+    except Exception as e:
+        await status.edit_text(f"❌ Ошибка OpenAI: {e}")
+        return
+    await state.update_data(tryon_bg_ru_prompt=ru_prompt)
+    await state.set_state(TryOn.bg_idea)
+    await status.delete()
+    await message.answer(ru_prompt, reply_markup=tryon_bg_ru_keyboard())
+
+
+@dp.callback_query(F.data.in_({"tryon_bg_generate", "tryon_bg_regen"}))
+async def cb_tryon_bg_generate(call: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    await call.answer()
+    status = await call.message.answer("🎨 Генерирую фон…")
+    try:
+        en_prompt = await openai_chat(TRANSLATE_TRYON_BG_EN, data["tryon_bg_ru_prompt"])
+        composite = await openai_image_edit(en_prompt, [data["tryon_base_image"]])
+    except Exception as e:
+        await status.edit_text(f"❌ Ошибка генерации: {e}")
+        log.error("tryon bg generation error: %s", e)
+        return
+
+    await state.update_data(tryon_composite=composite)
+    await status.delete()
+    await call.message.answer_photo(
+        BufferedInputFile(composite, filename="tryon_bg.png"),
+        reply_markup=tryon_bg_done_keyboard(),
+    )
+
+
+@dp.callback_query(F.data == "tryon_bg_confirm")
+async def cb_tryon_bg_confirm(call: CallbackQuery, state: FSMContext):
+    await state.set_state(TryOn.video_idea)
+    await call.message.edit_reply_markup(reply_markup=None)
+    await call.message.answer(
+        "Опишите движения камеры (наезд, отъезд, панорама, глубина резкости, яркость, резкость и т.д.) "
+        "и физику движений девушки (обычная походка, поворот, ветер, вода и т.п.):"
+    )
+    await call.answer()
+
+
+@dp.message(TryOn.video_idea)
+async def handle_tryon_video_idea(message: Message, state: FSMContext):
+    data = await state.get_data()
+    composite = data.get("tryon_composite")
+    if composite is None:
+        await state.clear()
+        await message.answer("Сессия сброшена. Начните заново через /start")
+        return
+
+    status = await message.answer("✍️ Собираю промпт…")
+    vision_prompt = BUILD_TRYON_VIDEO_RU + f"\n\nОписание желаемой съёмки от пользователя: {message.text}"
+    try:
+        ru_prompt = await openai_vision(vision_prompt, composite)
+    except Exception as e:
+        await status.edit_text(f"❌ Ошибка OpenAI: {e}")
+        return
+
+    await state.update_data(video_ru_prompt=ru_prompt, video_image=composite, var="9:16", bg_done=True)
+    await state.set_state(VideoGen.idea)
+    await status.delete()
+    await message.answer(ru_prompt, reply_markup=video_ru_keyboard())
 
 
 # ---------------------------------------------------------------------------
