@@ -143,6 +143,8 @@ async def nano_banana(prompt: str, aspect_ratio: str) -> bytes | None:
 
 
 async def veo_generate(prompt: str, aspect_ratio: str, image_bytes: bytes | None = None) -> bytes | None:
+    log.info("veo prompt: %s", prompt)
+
     def _call():
         kwargs = {}
         if image_bytes is not None:
