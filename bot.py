@@ -28,7 +28,7 @@ from prompts import (
     BUILD_RU, REVISE_RU, TRANSLATE_EN, ANALYZE_STYLE,
     BUILD_TRYON_BG_RU, TRANSLATE_TRYON_BG_EN,
     BUILD_TRYON_VIDEO_RU, TRANSLATE_TRYON_VIDEO_EN,
-    FACE_IDENTITY,
+    CORE_IDENTITY,
 )
 
 load_dotenv()
@@ -836,7 +836,7 @@ async def handle_tryon_garment(message: Message, state: FSMContext):
         results = await asyncio.gather(
             *(
                 openai_image_edit(
-                    base_prompt.format(angle=angle) + "\n\n" + FACE_IDENTITY,
+                    base_prompt.format(angle=angle) + "\n\n" + CORE_IDENTITY,
                     [model_bytes, garment_bytes],
                 )
                 for angle in angles
@@ -911,7 +911,7 @@ async def cb_tryon_bg_generate(call: CallbackQuery, state: FSMContext):
     status = await call.message.answer("🎨 Генерирую фон…")
     try:
         en_prompt = await openai_chat(TRANSLATE_TRYON_BG_EN, data["tryon_bg_ru_prompt"])
-        composite = await openai_image_edit(en_prompt + "\n\n" + FACE_IDENTITY, [data["tryon_base_image"]])
+        composite = await openai_image_edit(en_prompt + "\n\n" + CORE_IDENTITY, [data["tryon_base_image"]])
     except Exception as e:
         await status.edit_text(f"❌ Ошибка генерации: {e}")
         log.error("tryon bg generation error: %s", e)

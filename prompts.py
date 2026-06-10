@@ -41,6 +41,30 @@ FACE_IDENTITY = (
     "=== END FACE IDENTITY ==="
 )
 
+HAIR_IDENTITY = (
+    "HAIR: Long wavy blonde hair — warm honey blonde base (#C9A84C), lighter streaks "
+    "(#E8D090), darker roots (#8B6A2E), beach-wave texture, volume on top, cascading "
+    "over both shoulders, lived-in styling, airy ends, hair catches luminous glow from "
+    "key light side."
+)
+
+PHOTOGRAPHY_STYLE = (
+    "PHOTOGRAPHY: Shot on full-frame camera, 85mm lens at f/2.0, shallow depth of field — "
+    "subject tack sharp, background softly defocused. Natural color grading, slightly "
+    "lifted shadows, subtle film grain. Editorial lifestyle aesthetic."
+)
+
+QUALITY_BOOST = (
+    "QUALITY: ultra-realistic, 8K, hyperdetailed skin texture with visible pores, "
+    "photographic depth of field, natural light photography, anatomically correct hands, "
+    "correct finger count, no plastic skin, no oversaturation, no HDR look, no harsh "
+    "artificial shadows, no AI artifacts."
+)
+
+CORE_IDENTITY = (
+    FACE_IDENTITY + "\n\n" + HAIR_IDENTITY + "\n\n" + PHOTOGRAPHY_STYLE + "\n\n" + QUALITY_BOOST
+)
+
 BUILD_RU = (
     "Ты — эксперт по промптам для фотореалистичных image-моделей. "
     "По идее пользователя составь подробный структурированный промпт НА РУССКОМ. "
