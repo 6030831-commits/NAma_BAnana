@@ -83,6 +83,8 @@ BUILD_ANIMATE_RU = (
     "освещение и настроение. "
     "Внешность модели, причёску, одежду, цвета и силуэт НЕ менять — только добавляй естественное движение "
     "и динамику камеры, как в видео с модного показа или рекламной видеосъёмки. "
+    "Обязательно укажи, что фон и локация должны быть видны полностью с самого первого кадра видео — "
+    "без затемнения, наплыва, появления или смены фона в процессе ролика. "
     "Выведи только текст промпта, без вступлений и пояснений."
 )
 
@@ -93,6 +95,8 @@ TRANSLATE_ANIMATE_EN = (
     "fashion film aesthetic — but only if they don't contradict the stated style. "
     "Strongly emphasize that the person's appearance, outfit, colors and identity must remain EXACTLY "
     "as in the source image — only add motion and camera movement. "
+    "Strongly emphasize that the background and location must be fully visible and established from "
+    "the very first frame — no fade-in, dissolve, or background appearing/changing during the clip. "
     "Output only the English prompt, no explanations."
 )
 
