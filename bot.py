@@ -159,8 +159,16 @@ async def veo_generate(prompt: str, aspect_ratio: str, image_bytes: bytes | None
         while not operation.done:
             time.sleep(10)
             operation = genai_client.operations.get(operation)
+        if operation.error:
+            log.error("veo operation error: %s", operation.error)
+            return None
         if operation.response and operation.result.generated_videos:
             return operation.result.generated_videos[0].video.video_bytes
+        log.error(
+            "veo no video generated; result=%s rai_filtered_reasons=%s",
+            operation.result,
+            getattr(operation.result, "rai_media_filtered_reasons", None),
+        )
         return None
     return await asyncio.to_thread(_call)
 
