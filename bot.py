@@ -41,7 +41,7 @@ GOOGLE_CLOUD_PROJECT  = os.environ["GOOGLE_CLOUD_PROJECT"]
 GOOGLE_CLOUD_LOCATION = os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1")
 GEMINI_IMAGE_MODEL    = os.getenv("GEMINI_IMAGE_MODEL", "imagen-3.0-generate-002")
 VEO_MODEL             = os.getenv("VEO_MODEL", "veo-3.0-fast-generate-001")
-OPENAI_MODEL          = os.getenv("OPENAI_MODEL", "gpt-4o")
+OPENAI_MODEL          = os.getenv("OPENAI_MODEL", "gpt-55")
 ALLOWED_USERS         = set(map(int, os.environ["ALLOWED_USERS"].split(",")))
 FREE_USERS            = (
     set(map(int, os.environ["FREE_USERS"].split(",")))
